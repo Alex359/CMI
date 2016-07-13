@@ -1,0 +1,77 @@
+import math
+
+#func_glob =  lambda x: 2 * x ** 3 - 3 * x ** 2 - 12 * x - 5
+#func_first = lambda x: 6 * x ** 2 - 6 * x - 12
+
+func_glob =  lambda x: x-math.cos(x)
+func_first = lambda x: 1+math.sin(x)
+func_for_iteration= lambda x: math.cos(x)
+#func_for_iteration= lambda x: (math.cosh(0.7*x)-9)/3.5
+
+#a1, b1 = 0.0, 10.0
+a1, b1 = 0.0, 1.0
+
+e = 0.001
+
+def half_divide_method(a, b, f):
+    count=0
+    x = (a + b) / 2
+    while math.fabs(f(x)) >= e:#модуль-fabs
+        count+=1
+        x = (a + b) / 2
+        a, b = (a, x) if f(a) * f(x) < 0 else (x, b)
+    print("N_steps_/2=",count)
+    return (a + b) / 2
+
+
+def newtons_method(a, b, f, f1):
+    count=0
+    x0 = (a + b) / 2
+    x1 = x0 - (f(x0) / f1(x0))
+    while True:
+        if math.fabs(x1 - x0) < e: break
+        x0 = x1
+        x1 = x0 - (f(x0) / f1(x0))
+        count+=1
+    print("N_steps_newton=",count) 
+    return x1
+
+def newtons_method_just(x0, f, f1):
+    #f1 - производная
+    count=0
+    while True:
+        x1 = x0 - (f(x0) / f1(x0))
+        count+=1
+        if math.fabs(x1 - x0) < e: break
+        x0 = x1
+    print("N_steps_newton=",count)
+    return x1
+
+def mpi(x0,f):
+    e = 0.000001
+    x1=x0
+    count=0
+    while True:
+	    y=f(x1)
+	    count+=1
+	    if math.fabs(x1-y) < e: break
+	    if count>100 : break
+	    x1=y
+    print("N_steps_mpi=",count)
+    return x1
+		
+		
+
+
+
+
+founded_x=newtons_method_just((a1+b1)/2,func_glob, func_first)
+print("_____________mathd_/2")
+print (half_divide_method(a1, b1, func_glob))#бисекция
+print("_____________mathd_newtona")
+print (newtons_method_just((a1+b1)/2,func_glob, func_first))#метод ньютона
+#print (newtons_method(a1, b1, func_glob, func_first))#метод ньютона
+print("_____________test")
+print (func_glob(founded_x)) #near zero
+print("_____________mpi")
+print (mpi((a1+b1)/2,func_for_iteration))
